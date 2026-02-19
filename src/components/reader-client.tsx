@@ -72,11 +72,16 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [readerSettingsOpen, setReaderSettingsOpen] = useState(false);
+  const [bookmarkPromptAyah, setBookmarkPromptAyah] = useState<number | null>(
+    null,
+  );
 
   const ayahLimit = surah.numberOfAyahs;
-  const activeAyahData = surah.ayahs.find(
-    (ayah) => ayah.numberInSurah === activeAyah,
-  );
+  const bookmarkPromptAyahData =
+    bookmarkPromptAyah === null
+      ? null
+      : surah.ayahs.find((ayah) => ayah.numberInSurah === bookmarkPromptAyah) ??
+        null;
 
   const focusAyah = useCallback(
     (ayahNumber: number, smooth = true) => {
@@ -176,6 +181,20 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
     };
   }, [readerSettingsOpen]);
 
+  useEffect(() => {
+    if (bookmarkPromptAyah === null) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setBookmarkPromptAyah(null);
+    }, 4500);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [bookmarkPromptAyah]);
+
   const submitJump = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const targetAyah = Number(jumpValue);
@@ -248,14 +267,7 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
       }
       return next;
     });
-  };
-
-  const onToggleActiveBookmark = async () => {
-    if (!activeAyahData) {
-      return;
-    }
-
-    await onToggleBookmark(activeAyahData.numberInSurah, activeAyahData.text);
+    setBookmarkPromptAyah(null);
   };
 
   const onToggleFullscreen = async () => {
@@ -296,11 +308,15 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
                 className={`ayah-inline${isActive ? " active" : ""}`}
                 role="button"
                 tabIndex={0}
-                onClick={() => focusAyah(ayah.numberInSurah, false)}
+                onClick={() => {
+                  focusAyah(ayah.numberInSurah, false);
+                  setBookmarkPromptAyah(ayah.numberInSurah);
+                }}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
                     focusAyah(ayah.numberInSurah, false);
+                    setBookmarkPromptAyah(ayah.numberInSurah);
                   }
                 }}
               >
@@ -316,6 +332,35 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
           })}
         </p>
       </article>
+
+      {bookmarkPromptAyahData && !readerSettingsOpen ? (
+        <div className="ayah-bookmark-popover" role="status" aria-live="polite">
+          <p className="muted">Ayat {bookmarkPromptAyahData.numberInSurah}</p>
+          <div className="ayah-bookmark-actions">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setBookmarkPromptAyah(null)}
+            >
+              Tutup
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() =>
+                void onToggleBookmark(
+                  bookmarkPromptAyahData.numberInSurah,
+                  bookmarkPromptAyahData.text,
+                )
+              }
+            >
+              {bookmarkedAyahs.has(bookmarkPromptAyahData.numberInSurah)
+                ? "Hapus Bookmark"
+                : "Tambah Bookmark"}
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       {readerSettingsOpen ? (
         <div
@@ -383,15 +428,6 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
             </form>
 
             <div className="inline-actions reader-modal-actions">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={onToggleActiveBookmark}
-              >
-                {bookmarkedAyahs.has(activeAyah)
-                  ? "Hapus Bookmark Aktif"
-                  : "Bookmark Ayat Aktif"}
-              </button>
               <button
                 type="button"
                 className="btn btn-secondary"

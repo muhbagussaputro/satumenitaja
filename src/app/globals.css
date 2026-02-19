@@ -848,6 +848,34 @@ ul {
   font-size: 0.96rem;
 }
 
+.ayah-bookmark-popover {
+  position: fixed;
+  left: 50%;
+  bottom: calc(0.9rem + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 24;
+  width: min(calc(100% - 1.4rem), 30rem);
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: var(--shadow);
+  padding: 0.58rem 0.62rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.ayah-bookmark-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.42rem;
+  flex-wrap: wrap;
+}
+
+.ayah-bookmark-actions .btn {
+  min-width: 7.1rem;
+}
+
 .mushaf-sheet {
   position: relative;
   isolation: isolate;
