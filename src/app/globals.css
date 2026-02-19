@@ -1,0 +1,897 @@
+:root {
+  --font-scale: 1;
+
+  --bg: #f7f2e7;
+  --bg-layer: #f0e7d4;
+  --surface: #fffdfa;
+  --surface-soft: #f7f2e8;
+  --text: #1f2a1f;
+  --text-muted: #4f6150;
+  --line: #d7ccb5;
+  --brand: #2f4f3f;
+  --brand-soft: #dce7dd;
+  --danger: #9f3330;
+  --shadow: 0 10px 30px rgba(31, 42, 31, 0.08);
+}
+
+body {
+  --font-arabic-current: var(--font-arabic-naskh);
+  --mushaf-text-color: #2b1d0e;
+  --mushaf-brightness: 1;
+  --mushaf-paper-border: #d2bd93;
+  --mushaf-paper-shadow: rgba(78, 56, 26, 0.18);
+  --mushaf-paper-background:
+    radial-gradient(130% 90% at 20% 15%, rgba(255, 255, 255, 0.58), transparent 50%),
+    radial-gradient(120% 90% at 88% 100%, rgba(170, 124, 57, 0.16), transparent 48%),
+    linear-gradient(180deg, #f7eed8 0%, #efdfc0 100%);
+  --mushaf-paper-grain:
+    repeating-linear-gradient(
+      -8deg,
+      rgba(121, 84, 34, 0.048) 0 2px,
+      transparent 2px 7px
+    ),
+    repeating-linear-gradient(
+      8deg,
+      rgba(255, 255, 255, 0.18) 0 1px,
+      transparent 1px 5px
+    );
+}
+
+body[data-arabic-font="noto-naskh"] {
+  --font-arabic-current: var(--font-arabic-naskh);
+}
+
+body[data-arabic-font="amiri"] {
+  --font-arabic-current: var(--font-arabic-amiri);
+}
+
+body[data-arabic-font="scheherazade"] {
+  --font-arabic-current: var(--font-arabic-scheherazade);
+}
+
+body[data-arabic-font="markazi"] {
+  --font-arabic-current: var(--font-arabic-markazi);
+}
+
+body[data-arabic-font="noto-kufi"] {
+  --font-arabic-current: var(--font-arabic-kufi);
+}
+
+body[data-arabic-font="tajawal"] {
+  --font-arabic-current: var(--font-arabic-tajawal);
+}
+
+body[data-arabic-font="cairo"] {
+  --font-arabic-current: var(--font-arabic-cairo);
+}
+
+body[data-arabic-font="noto-sans"] {
+  --font-arabic-current: var(--font-arabic-sans);
+}
+
+body[data-paper-template="classic-cream"] {
+  --mushaf-paper-border: #d2bd93;
+  --mushaf-paper-shadow: rgba(78, 56, 26, 0.18);
+  --mushaf-paper-background:
+    radial-gradient(130% 90% at 20% 15%, rgba(255, 255, 255, 0.58), transparent 50%),
+    radial-gradient(120% 90% at 88% 100%, rgba(170, 124, 57, 0.16), transparent 48%),
+    linear-gradient(180deg, #f7eed8 0%, #efdfc0 100%);
+  --mushaf-paper-grain:
+    repeating-linear-gradient(
+      -8deg,
+      rgba(121, 84, 34, 0.048) 0 2px,
+      transparent 2px 7px
+    ),
+    repeating-linear-gradient(
+      8deg,
+      rgba(255, 255, 255, 0.18) 0 1px,
+      transparent 1px 5px
+    );
+}
+
+body[data-paper-template="soft-ivory"] {
+  --mushaf-paper-border: #cbbf9e;
+  --mushaf-paper-shadow: rgba(88, 70, 43, 0.16);
+  --mushaf-paper-background:
+    radial-gradient(110% 70% at 50% 0%, rgba(255, 255, 255, 0.6), transparent 48%),
+    linear-gradient(180deg, #fcf5e3 0%, #f4ebd7 100%);
+  --mushaf-paper-grain:
+    repeating-linear-gradient(
+      0deg,
+      rgba(140, 118, 78, 0.04) 0 1px,
+      transparent 1px 5px
+    );
+}
+
+body[data-paper-template="aged-parchment"] {
+  --mushaf-paper-border: #b99d74;
+  --mushaf-paper-shadow: rgba(84, 55, 24, 0.25);
+  --mushaf-paper-background:
+    radial-gradient(160% 100% at 10% 8%, rgba(255, 243, 215, 0.45), transparent 47%),
+    radial-gradient(120% 90% at 85% 95%, rgba(144, 94, 45, 0.24), transparent 52%),
+    linear-gradient(180deg, #edd7af 0%, #dfc291 100%);
+  --mushaf-paper-grain:
+    repeating-linear-gradient(
+      12deg,
+      rgba(120, 73, 28, 0.06) 0 2px,
+      transparent 2px 8px
+    ),
+    repeating-linear-gradient(
+      -12deg,
+      rgba(255, 236, 200, 0.15) 0 1px,
+      transparent 1px 6px
+    );
+}
+
+body[data-paper-template="linen-beige"] {
+  --mushaf-paper-border: #c4b193;
+  --mushaf-paper-shadow: rgba(70, 58, 34, 0.2);
+  --mushaf-paper-background:
+    linear-gradient(180deg, #f4ebd9 0%, #ece0c9 100%);
+  --mushaf-paper-grain:
+    repeating-linear-gradient(
+      90deg,
+      rgba(132, 110, 72, 0.05) 0 1px,
+      transparent 1px 6px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(132, 110, 72, 0.05) 0 1px,
+      transparent 1px 6px
+    );
+}
+
+body[data-paper-template="sandstone"] {
+  --mushaf-paper-border: #c7a86b;
+  --mushaf-paper-shadow: rgba(106, 76, 28, 0.2);
+  --mushaf-paper-background:
+    radial-gradient(130% 100% at 80% 15%, rgba(255, 226, 159, 0.35), transparent 46%),
+    linear-gradient(180deg, #f4dca8 0%, #e8ca87 100%);
+  --mushaf-paper-grain:
+    repeating-linear-gradient(
+      -10deg,
+      rgba(139, 101, 39, 0.06) 0 2px,
+      transparent 2px 7px
+    );
+}
+
+body[data-paper-template="rose-paper"] {
+  --mushaf-paper-border: #c8a6a0;
+  --mushaf-paper-shadow: rgba(107, 66, 58, 0.2);
+  --mushaf-paper-background:
+    radial-gradient(120% 80% at 85% 10%, rgba(255, 227, 220, 0.5), transparent 44%),
+    linear-gradient(180deg, #f8e3dc 0%, #edd1c9 100%);
+  --mushaf-paper-grain:
+    repeating-linear-gradient(
+      6deg,
+      rgba(138, 88, 74, 0.05) 0 1px,
+      transparent 1px 5px
+    );
+}
+
+body[data-paper-template="mint-paper"] {
+  --mushaf-paper-border: #a9bba6;
+  --mushaf-paper-shadow: rgba(50, 77, 55, 0.18);
+  --mushaf-paper-background:
+    radial-gradient(130% 88% at 20% 8%, rgba(236, 255, 237, 0.5), transparent 45%),
+    linear-gradient(180deg, #e5f0df 0%, #d5e2cb 100%);
+  --mushaf-paper-grain:
+    repeating-linear-gradient(
+      -5deg,
+      rgba(84, 116, 83, 0.045) 0 1px,
+      transparent 1px 6px
+    );
+}
+
+body[data-paper-template="gray-manuscript"] {
+  --mushaf-paper-border: #aeb0af;
+  --mushaf-paper-shadow: rgba(60, 60, 60, 0.2);
+  --mushaf-paper-background:
+    radial-gradient(120% 88% at 50% 12%, rgba(255, 255, 255, 0.42), transparent 45%),
+    linear-gradient(180deg, #e2e3e1 0%, #d3d5d3 100%);
+  --mushaf-paper-grain:
+    repeating-linear-gradient(
+      8deg,
+      rgba(90, 90, 90, 0.045) 0 1px,
+      transparent 1px 5px
+    );
+}
+
+body[data-paper-template="blue-folio"] {
+  --mushaf-paper-border: #9fb3c4;
+  --mushaf-paper-shadow: rgba(54, 72, 94, 0.2);
+  --mushaf-paper-background:
+    radial-gradient(120% 84% at 80% 10%, rgba(225, 239, 255, 0.5), transparent 44%),
+    linear-gradient(180deg, #dce9f5 0%, #c7d9e8 100%);
+  --mushaf-paper-grain:
+    repeating-linear-gradient(
+      -7deg,
+      rgba(67, 91, 117, 0.05) 0 1px,
+      transparent 1px 6px
+    );
+}
+
+body[data-paper-template="night-folio"] {
+  --mushaf-paper-border: #4e5d69;
+  --mushaf-paper-shadow: rgba(0, 0, 0, 0.35);
+  --mushaf-paper-background:
+    radial-gradient(130% 92% at 20% 12%, rgba(84, 104, 122, 0.26), transparent 46%),
+    linear-gradient(180deg, #1b232c 0%, #121920 100%);
+  --mushaf-paper-grain:
+    repeating-linear-gradient(
+      8deg,
+      rgba(183, 212, 229, 0.06) 0 1px,
+      transparent 1px 6px
+    );
+}
+
+:root[data-theme="night"] {
+  --bg: #0f1514;
+  --bg-layer: #16201e;
+  --surface: #182321;
+  --surface-soft: #22302d;
+  --text: #edf5ef;
+  --text-muted: #b8cbc0;
+  --line: #365047;
+  --brand: #89b59e;
+  --brand-soft: #30463f;
+  --danger: #e38a87;
+  --shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  color: var(--text);
+  background:
+    radial-gradient(80rem 35rem at top, var(--bg-layer), transparent),
+    var(--bg);
+  font-family:
+    var(--font-body),
+    "Avenir Next",
+    "Segoe UI",
+    sans-serif;
+  line-height: 1.45;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+.app-shell {
+  min-height: 100vh;
+  width: min(100%, 1024px);
+  margin: 0 auto;
+  padding: 1rem 0.85rem 2.5rem;
+}
+
+.top-bar {
+  position: sticky;
+  top: 0.75rem;
+  z-index: 25;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0.65rem 0.75rem;
+  margin-bottom: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  backdrop-filter: blur(10px);
+  transition:
+    transform 0.22s ease,
+    opacity 0.22s ease;
+  transform: translateY(0);
+  opacity: 1;
+  will-change: transform;
+}
+
+.top-bar.is-hidden {
+  transform: translateY(calc(-100% - 0.9rem));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.top-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  margin-inline-start: auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.2rem;
+  background: color-mix(in srgb, var(--surface-soft) 72%, transparent);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.65rem;
+  background: var(--brand);
+  color: #f5f7f5;
+  font-family:
+    var(--font-arabic-current, "Noto Naskh Arabic"),
+    "Times New Roman",
+    serif;
+  font-size: 1.15rem;
+}
+
+.brand-copy {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.brand-copy strong {
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+.brand-copy small {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}
+
+.nav-link {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.72rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  background: var(--brand-soft);
+}
+
+.nav-link.is-active {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.nav-toggle {
+  white-space: nowrap;
+}
+
+.settings-panel {
+  margin-bottom: 0.9rem;
+  margin-top: -0.15rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  padding: 0.75rem;
+  background: color-mix(in srgb, var(--surface-soft) 90%, transparent);
+  box-shadow: var(--shadow);
+}
+
+.settings-grid {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.setting-item {
+  border: 1px solid var(--line);
+  border-radius: 0.72rem;
+  padding: 0.55rem 0.65rem;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  display: grid;
+  gap: 0.48rem;
+  font-size: 0.9rem;
+}
+
+.setting-item-inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.setting-label {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.setting-item .select-input {
+  width: 100%;
+  min-width: 0;
+}
+
+.setting-item input[type="range"] {
+  width: 100%;
+}
+
+.content {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.home-layout,
+.stack-layout {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.hero h1 {
+  margin-top: 0.25rem;
+  font-size: 1.35rem;
+}
+
+.card.surah-overview {
+  gap: 0.24rem;
+  padding: 0.62rem 0.76rem;
+  box-shadow: none;
+  border-radius: 0.86rem;
+}
+
+.card.surah-overview .surah-overview-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.card.surah-overview h1 {
+  font-size: clamp(1.18rem, 2.7vw, 1.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.card.surah-overview .surah-pill {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.14rem 0.44rem;
+  background: var(--surface-soft);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.card.surah-overview .surah-arabic-name {
+  color: var(--text-muted);
+  font-family:
+    var(--font-arabic-current, "Noto Naskh Arabic"),
+    "Amiri",
+    serif;
+  font-size: calc(0.94rem * var(--font-scale));
+  line-height: 1.28;
+}
+
+.card.surah-overview .surah-translation {
+  font-size: 0.86rem;
+}
+
+.eyebrow {
+  color: var(--brand);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 1rem;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 0.7rem;
+}
+
+.card.compact {
+  padding: 0.8rem;
+}
+
+.surah-grid {
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.7rem;
+}
+
+.surah-item {
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: var(--surface-soft);
+}
+
+.surah-item:hover {
+  border-color: var(--brand);
+}
+
+.surah-number {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.6rem;
+  display: grid;
+  place-items: center;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.surah-meta {
+  display: grid;
+}
+
+.surah-meta strong {
+  font-size: 0.95rem;
+}
+
+.surah-meta small {
+  color: var(--text-muted);
+}
+
+.text-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  padding: 0.62rem 0.75rem;
+  font-size: 0.95rem;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.select-input {
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.9rem;
+  min-width: 11rem;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.color-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.color-input {
+  width: 2.25rem;
+  height: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0.1rem;
+  background: var(--surface);
+}
+
+.color-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.search-results {
+  margin-top: 0.5rem;
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.search-results li a {
+  display: grid;
+  gap: 0.2rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--surface-soft);
+}
+
+.search-results li a p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.reader-layout {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.sticky-controls {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.controls-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.controls-active {
+  font-size: 1.02rem;
+}
+
+.row-gap {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.inline-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.inline-form label {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+.inline-form .text-input {
+  width: 6.5rem;
+}
+
+.inline-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.nav-actions .btn {
+  min-width: 6rem;
+}
+
+.jump-form {
+  align-items: center;
+}
+
+.btn {
+  border: 1px solid transparent;
+  border-radius: 0.6rem;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.84rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #f5f7f5;
+}
+
+.btn-secondary {
+  background: var(--surface-soft);
+  border-color: var(--line);
+  color: var(--text);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--text-muted);
+}
+
+.btn:hover {
+  filter: brightness(1.03);
+}
+
+.mushaf-sheet {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--mushaf-paper-border);
+  border-radius: 1rem;
+  background: transparent;
+  box-shadow:
+    0 16px 35px var(--mushaf-paper-shadow),
+    var(--shadow);
+  padding: 1.1rem 1rem 3.2rem;
+}
+
+.mushaf-sheet::before,
+.mushaf-sheet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mushaf-sheet::before {
+  z-index: 0;
+  background: var(--mushaf-paper-background);
+  filter: brightness(var(--mushaf-brightness));
+}
+
+.mushaf-sheet::after {
+  z-index: 0;
+  background: var(--mushaf-paper-grain);
+  opacity: 0.42;
+  mix-blend-mode: multiply;
+}
+
+.mushaf-text {
+  position: relative;
+  z-index: 1;
+  color: var(--mushaf-text-color);
+  font-family:
+    var(--font-arabic-current, "Noto Naskh Arabic"),
+    "Amiri",
+    serif;
+  font-size: calc(1.52rem * var(--font-scale));
+  text-align: right;
+  line-height: 2.35;
+  direction: rtl;
+}
+
+.ayah-inline {
+  display: inline;
+  border-radius: 0.55rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.ayah-inline:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.ayah-inline.active {
+  background: color-mix(in srgb, var(--mushaf-text-color) 15%, transparent);
+}
+
+.ayah-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.95rem;
+  height: 1.95rem;
+  border: 1.5px solid color-mix(in srgb, var(--mushaf-text-color) 70%, #1b1309);
+  color: var(--mushaf-text-color);
+  background: color-mix(in srgb, #ffffff 55%, transparent);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  vertical-align: middle;
+  margin-inline: 0.38rem 0.55rem;
+  line-height: 1;
+}
+
+.ayah-marker.bookmarked {
+  background: var(--mushaf-text-color);
+  border-color: var(--mushaf-text-color);
+  color: #f5f7f5;
+}
+
+.notice {
+  font-size: 0.85rem;
+  color: var(--danger);
+}
+
+.reader-layout:fullscreen,
+.reader-layout:-webkit-full-screen {
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0.9rem;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  align-content: start;
+  gap: 0.85rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  background:
+    radial-gradient(80rem 35rem at top, var(--bg-layer), transparent),
+    var(--bg);
+}
+
+.reader-layout:fullscreen .sticky-controls,
+.reader-layout:-webkit-full-screen .sticky-controls {
+  position: sticky;
+  top: 0;
+  max-height: calc(100vh - 1.8rem);
+  overflow: auto;
+}
+
+.reader-layout:fullscreen .mushaf-sheet,
+.reader-layout:-webkit-full-screen .mushaf-sheet {
+  min-height: calc(100vh - 1.8rem);
+}
+
+.error-box {
+  border: 1px solid color-mix(in srgb, var(--danger) 40%, var(--line));
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--danger) 8%, var(--surface));
+  padding: 0.95rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+.bookmark-list {
+  list-style: none;
+  display: grid;
+  gap: 0.7rem;
+}
+
+@media (min-width: 900px) {
+  .app-shell {
+    padding: 1.25rem 1.25rem 3rem;
+  }
+
+  .settings-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .reader-layout {
+    grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .sticky-controls {
+    position: sticky;
+    top: 5.8rem;
+  }
+
+  .surah-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 980px) {
+  .reader-layout:fullscreen,
+  .reader-layout:-webkit-full-screen {
+    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  }
+}
