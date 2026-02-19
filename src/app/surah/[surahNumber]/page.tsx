@@ -34,19 +34,5 @@ export default async function SurahPage({ params }: SurahPageProps) {
     );
   }
 
-  return (
-    <div className="stack-layout">
-      <section className="card surah-overview">
-        <p className="surah-overview-meta">
-          <span className="eyebrow">Surah {surah.number}</span>
-          <span className="surah-pill">{surah.numberOfAyahs} ayat</span>
-        </p>
-        <h1>{surah.englishName}</h1>
-        <p className="surah-arabic-name">{surah.name}</p>
-        <p className="muted surah-translation">{surah.englishNameTranslation}</p>
-      </section>
-
-      <ReaderClient surah={surah} />
-    </div>
-  );
+  return <ReaderClient surah={surah} />;
 }

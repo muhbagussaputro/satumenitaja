@@ -2,12 +2,24 @@
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  ARABIC_FONT_OPTIONS,
+  ArabicFontOption,
+  getMushafBrightnessLimits,
+  getFontScaleLimits,
+  MUSHAF_PAPER_TEMPLATE_OPTIONS,
+  MushafPaperTemplateOption,
+} from "@/lib/preferences";
 import { SurahDetail } from "@/lib/quran-types";
+import { usePreferences } from "@/components/preferences-provider";
 import {
   getBookmarksForSurah,
   setLastRead,
   toggleBookmark,
 } from "@/lib/storage";
+
+const FONT_SCALE_LIMITS = getFontScaleLimits();
+const MUSHAF_BRIGHTNESS_LIMITS = getMushafBrightnessLimits();
 
 function parseAyahFromHash(maxAyah: number): number {
   if (typeof window === "undefined") {
@@ -44,11 +56,22 @@ function toArabicIndicNumber(value: number): string {
 
 export function ReaderClient({ surah }: { surah: SurahDetail }) {
   const router = useRouter();
+  const {
+    preferences,
+    setNightMode,
+    setFontScale,
+    setAudioAutoAdvance,
+    setArabicFont,
+    setMushafPaperTemplate,
+    setMushafBrightness,
+    setMushafTextColor,
+  } = usePreferences();
   const [activeAyah, setActiveAyah] = useState(1);
   const [jumpValue, setJumpValue] = useState("1");
   const [bookmarkedAyahs, setBookmarkedAyahs] = useState<Set<number>>(new Set());
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [readerSettingsOpen, setReaderSettingsOpen] = useState(false);
 
   const ayahLimit = surah.numberOfAyahs;
   const activeAyahData = surah.ayahs.find(
@@ -118,6 +141,41 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
     };
   }, []);
 
+  useEffect(() => {
+    const onToggleReaderSettings = () => {
+      setReaderSettingsOpen((prev) => !prev);
+    };
+
+    window.addEventListener(
+      "reader-settings:toggle",
+      onToggleReaderSettings as EventListener,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "reader-settings:toggle",
+        onToggleReaderSettings as EventListener,
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!readerSettingsOpen) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setReaderSettingsOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [readerSettingsOpen]);
+
   const submitJump = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const targetAyah = Number(jumpValue);
@@ -159,6 +217,7 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
       return;
     }
     setNotice(null);
+    setReaderSettingsOpen(false);
     router.push(`/surah/${surah.number + 1}`);
   };
 
@@ -168,6 +227,7 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
       return;
     }
     setNotice(null);
+    setReaderSettingsOpen(false);
     router.push(`/surah/${surah.number - 1}`);
   };
 
@@ -223,76 +283,6 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
 
   return (
     <section id="reader-root" className="reader-layout">
-      <div className="sticky-controls card compact">
-        <div className="controls-head">
-          <p className="muted controls-active">
-            Ayat aktif: {activeAyah} / {ayahLimit}
-          </p>
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={onToggleFullscreen}
-          >
-            {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-          </button>
-        </div>
-
-        <div className="row-gap">
-          <div className="inline-actions nav-actions">
-            <button type="button" className="btn btn-secondary" onClick={goPrev}>
-              Prev
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={goNext}>
-              Next
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={goPrevSurah}
-            >
-              Prev Surah
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={goNextSurah}
-            >
-              Next Surah
-            </button>
-          </div>
-
-          <div className="inline-actions">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={onToggleActiveBookmark}
-            >
-              {bookmarkedAyahs.has(activeAyah)
-                ? "Hapus Bookmark Aktif"
-                : "Bookmark Ayat Aktif"}
-            </button>
-          </div>
-
-          <form className="inline-form jump-form" onSubmit={submitJump}>
-            <label htmlFor="jump-ayah">Jump ayah</label>
-            <input
-              id="jump-ayah"
-              className="text-input"
-              type="number"
-              min={1}
-              max={ayahLimit}
-              value={jumpValue}
-              onChange={(event) => setJumpValue(event.target.value)}
-            />
-            <button type="submit" className="btn btn-primary">
-              Go
-            </button>
-          </form>
-        </div>
-
-        {notice ? <p className="notice">{notice}</p> : null}
-      </div>
-
       <article className="mushaf-sheet">
         <p className="mushaf-text">
           {surah.ayahs.map((ayah) => {
@@ -326,6 +316,200 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
           })}
         </p>
       </article>
+
+      {readerSettingsOpen ? (
+        <div
+          className="reader-modal-backdrop"
+          onClick={() => setReaderSettingsOpen(false)}
+          role="presentation"
+        >
+          <section
+            className="reader-modal card compact"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Reader settings"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="reader-modal-head">
+              <div className="reader-modal-copy">
+                <p className="eyebrow">Surah {surah.number}</p>
+                <h2>{surah.englishName}</h2>
+                <p className="muted">
+                  {surah.name} · {surah.englishNameTranslation} · {ayahLimit} ayat
+                </p>
+              </div>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setReaderSettingsOpen(false)}
+              >
+                Tutup
+              </button>
+            </div>
+
+            <p className="muted controls-active">
+              Ayat aktif: {activeAyah} / {ayahLimit}
+            </p>
+
+            <div className="inline-actions reader-modal-actions">
+              <button type="button" className="btn btn-secondary" onClick={goPrev}>
+                Prev
+              </button>
+              <button type="button" className="btn btn-secondary" onClick={goNext}>
+                Next
+              </button>
+              <button type="button" className="btn btn-primary" onClick={goPrevSurah}>
+                Prev Surah
+              </button>
+              <button type="button" className="btn btn-primary" onClick={goNextSurah}>
+                Next Surah
+              </button>
+            </div>
+
+            <form className="inline-form jump-form" onSubmit={submitJump}>
+              <label htmlFor="jump-ayah">Jump ayah</label>
+              <input
+                id="jump-ayah"
+                className="text-input"
+                type="number"
+                min={1}
+                max={ayahLimit}
+                value={jumpValue}
+                onChange={(event) => setJumpValue(event.target.value)}
+              />
+              <button type="submit" className="btn btn-primary">
+                Go
+              </button>
+            </form>
+
+            <div className="inline-actions reader-modal-actions">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={onToggleActiveBookmark}
+              >
+                {bookmarkedAyahs.has(activeAyah)
+                  ? "Hapus Bookmark Aktif"
+                  : "Bookmark Ayat Aktif"}
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={onToggleFullscreen}
+              >
+                {isFullscreen ? "Tutup Fullscreen" : "Fullscreen"}
+              </button>
+            </div>
+
+            <div className="reader-modal-settings">
+              <h3>Tampilan</h3>
+              <div className="settings-grid">
+                <label className="setting-item setting-item-inline">
+                  <span className="setting-label">Night mode</span>
+                  <input
+                    type="checkbox"
+                    checked={preferences.nightMode}
+                    onChange={(event) => setNightMode(event.target.checked)}
+                  />
+                </label>
+
+                <label className="setting-item">
+                  <span className="setting-label">Font scale</span>
+                  <input
+                    type="range"
+                    min={FONT_SCALE_LIMITS.min}
+                    max={FONT_SCALE_LIMITS.max}
+                    step={0.05}
+                    value={preferences.fontScale}
+                    onChange={(event) => setFontScale(Number(event.target.value))}
+                  />
+                </label>
+
+                <label className="setting-item">
+                  <span className="setting-label">Font Arab</span>
+                  <select
+                    className="select-input"
+                    value={preferences.arabicFont}
+                    onChange={(event) =>
+                      setArabicFont(event.target.value as ArabicFontOption)
+                    }
+                  >
+                    {ARABIC_FONT_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="setting-item">
+                  <span className="setting-label">Template kertas ayat</span>
+                  <select
+                    className="select-input"
+                    value={preferences.mushafPaperTemplate}
+                    onChange={(event) =>
+                      setMushafPaperTemplate(
+                        event.target.value as MushafPaperTemplateOption,
+                      )
+                    }
+                  >
+                    {MUSHAF_PAPER_TEMPLATE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="setting-item">
+                  <span className="setting-label">
+                    Brightness kertas {Math.round(preferences.mushafBrightness * 100)}
+                    %
+                  </span>
+                  <input
+                    type="range"
+                    min={MUSHAF_BRIGHTNESS_LIMITS.min}
+                    max={MUSHAF_BRIGHTNESS_LIMITS.max}
+                    step={0.05}
+                    value={preferences.mushafBrightness}
+                    onChange={(event) =>
+                      setMushafBrightness(Number(event.target.value))
+                    }
+                  />
+                </label>
+
+                <label className="setting-item">
+                  <span className="setting-label">Warna font ayat</span>
+                  <div className="color-field">
+                    <input
+                      className="color-input"
+                      type="color"
+                      value={preferences.mushafTextColor}
+                      onChange={(event) => setMushafTextColor(event.target.value)}
+                    />
+                    <span className="color-code">
+                      {preferences.mushafTextColor.toUpperCase()}
+                    </span>
+                  </div>
+                </label>
+
+                <label className="setting-item setting-item-inline">
+                  <span className="setting-label">Auto next audio</span>
+                  <input
+                    type="checkbox"
+                    checked={preferences.audioAutoAdvance}
+                    onChange={(event) =>
+                      setAudioAutoAdvance(event.target.checked)
+                    }
+                  />
+                </label>
+              </div>
+            </div>
+
+            {notice ? <p className="notice">{notice}</p> : null}
+          </section>
+        </div>
+      ) : null}
     </section>
   );
 }
