@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   ARABIC_FONT_OPTIONS,
@@ -10,7 +10,7 @@ import {
   MUSHAF_PAPER_TEMPLATE_OPTIONS,
   MushafPaperTemplateOption,
 } from "@/lib/preferences";
-import { SurahDetail } from "@/lib/quran-types";
+import { SurahDetail, SurahMeta } from "@/lib/quran-types";
 import { usePreferences } from "@/components/preferences-provider";
 import {
   getBookmarksForSurah,
@@ -20,6 +20,10 @@ import {
 
 const FONT_SCALE_LIMITS = getFontScaleLimits();
 const MUSHAF_BRIGHTNESS_LIMITS = getMushafBrightnessLimits();
+
+type SurahListResponse = {
+  surahs: SurahMeta[];
+};
 
 function parseAyahFromHash(maxAyah: number): number {
   if (typeof window === "undefined") {
@@ -75,8 +79,18 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
   const [bookmarkPromptAyah, setBookmarkPromptAyah] = useState<number | null>(
     null,
   );
+  const [isSurahNavPending, startSurahNavTransition] = useTransition();
+  const [surahNameMap, setSurahNameMap] = useState<Record<number, string>>({});
 
   const ayahLimit = surah.numberOfAyahs;
+  const prevSurahNumber = surah.number > 1 ? surah.number - 1 : null;
+  const nextSurahNumber = surah.number < 114 ? surah.number + 1 : null;
+  const prevSurahLabel = prevSurahNumber
+    ? (surahNameMap[prevSurahNumber] ?? `Surah ${prevSurahNumber}`)
+    : null;
+  const nextSurahLabel = nextSurahNumber
+    ? (surahNameMap[nextSurahNumber] ?? `Surah ${nextSurahNumber}`)
+    : null;
   const bookmarkPromptAyahData =
     bookmarkPromptAyah === null
       ? null
@@ -117,13 +131,47 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
     return () => {
       window.cancelAnimationFrame(frame);
     };
-  }, [ayahLimit]);
+  }, [ayahLimit, surah.number]);
 
   useEffect(() => {
     void getBookmarksForSurah(surah.number).then((values) =>
       setBookmarkedAyahs(values),
     );
   }, [surah.number]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadSurahNames = async () => {
+      try {
+        const response = await fetch("/api/surah-list", { cache: "force-cache" });
+        if (!response.ok) {
+          throw new Error("Failed to load surah list");
+        }
+
+        const payload = (await response.json()) as SurahListResponse;
+        if (!mounted) {
+          return;
+        }
+
+        const names: Record<number, string> = {};
+        for (const item of payload.surahs ?? []) {
+          names[item.number] = item.englishName;
+        }
+        setSurahNameMap(names);
+      } catch {
+        if (mounted) {
+          setSurahNameMap({});
+        }
+      }
+    };
+
+    void loadSurahNames();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     void setLastRead({
@@ -231,23 +279,37 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
   };
 
   const goNextSurah = () => {
+    if (isSurahNavPending) {
+      return;
+    }
+
     if (surah.number >= 114) {
       setNotice("Sudah surah terakhir.");
       return;
     }
     setNotice(null);
     setReaderSettingsOpen(false);
-    router.push(`/surah/${surah.number + 1}`);
+    setBookmarkPromptAyah(null);
+    startSurahNavTransition(() => {
+      router.push(`/surah/${surah.number + 1}`);
+    });
   };
 
   const goPrevSurah = () => {
+    if (isSurahNavPending) {
+      return;
+    }
+
     if (surah.number <= 1) {
       setNotice("Sudah surah pertama.");
       return;
     }
     setNotice(null);
     setReaderSettingsOpen(false);
-    router.push(`/surah/${surah.number - 1}`);
+    setBookmarkPromptAyah(null);
+    startSurahNavTransition(() => {
+      router.push(`/surah/${surah.number - 1}`);
+    });
   };
 
   const onToggleBookmark = async (ayahNumber: number, text: string) => {
@@ -403,13 +465,30 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
               <button type="button" className="btn btn-secondary" onClick={goNext}>
                 Next
               </button>
-              <button type="button" className="btn btn-primary" onClick={goPrevSurah}>
-                Prev Surah
+              <button
+                type="button"
+                className="btn btn-primary surah-nav-btn"
+                onClick={goPrevSurah}
+                disabled={isSurahNavPending || surah.number <= 1}
+              >
+                {prevSurahLabel ? `Prev (${prevSurahLabel})` : "Prev"}
               </button>
-              <button type="button" className="btn btn-primary" onClick={goNextSurah}>
-                Next Surah
+              <button
+                type="button"
+                className="btn btn-primary surah-nav-btn"
+                onClick={goNextSurah}
+                disabled={isSurahNavPending || surah.number >= 114}
+              >
+                {nextSurahLabel ? `Next (${nextSurahLabel})` : "Next"}
               </button>
             </div>
+
+            {isSurahNavPending ? (
+              <p className="muted loading-inline reader-status-loading">
+                <span className="loading-dot" aria-hidden />
+                Memuat surah...
+              </p>
+            ) : null}
 
             <form className="inline-form jump-form" onSubmit={submitJump}>
               <label htmlFor="jump-ayah">Jump ayah</label>
@@ -546,6 +625,31 @@ export function ReaderClient({ surah }: { surah: SurahDetail }) {
           </section>
         </div>
       ) : null}
+
+      <section className="card compact reader-bottom-nav" aria-label="Quick surah navigation">
+        <button
+          type="button"
+          className="btn btn-secondary surah-nav-btn"
+          onClick={goPrevSurah}
+          disabled={isSurahNavPending || surah.number <= 1}
+        >
+          {prevSurahLabel ? `Prev (${prevSurahLabel})` : "Prev"}
+        </button>
+        <button
+          type="button"
+          className="btn btn-primary surah-nav-btn"
+          onClick={goNextSurah}
+          disabled={isSurahNavPending || surah.number >= 114}
+        >
+          {nextSurahLabel ? `Next (${nextSurahLabel})` : "Next"}
+        </button>
+        {isSurahNavPending ? (
+          <p className="muted loading-inline reader-bottom-loading">
+            <span className="loading-dot" aria-hidden />
+            Memuat surah...
+          </p>
+        ) : null}
+      </section>
     </section>
   );
 }

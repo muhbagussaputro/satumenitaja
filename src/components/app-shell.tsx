@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -96,7 +97,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="app-shell">
       <header className={`top-bar${headerVisible ? "" : " is-hidden"}`}>
         <Link className="brand" href="/">
-          <span className="brand-mark">سم</span>
+          <span className="brand-mark" aria-hidden>
+            <Image
+              src="/logo-satumenitaja-512.png"
+              alt=""
+              width={44}
+              height={44}
+              className="brand-logo"
+              priority
+            />
+          </span>
           <span className="brand-copy">
             <strong>SatuMenitAja</strong>
             <small>Al-Quran Reader</small>

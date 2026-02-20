@@ -210,7 +210,10 @@ export function HeaderSearch() {
           aria-label="Hasil pencarian surah"
         >
           {isLoading ? (
-            <p className="header-search-status muted">Memuat daftar surah...</p>
+            <p className="header-search-status muted loading-inline">
+              <span className="loading-dot" aria-hidden />
+              Memuat daftar surah...
+            </p>
           ) : null}
 
           {!isLoading && hasError ? (

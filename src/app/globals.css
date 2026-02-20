@@ -341,13 +341,15 @@ ul {
   width: 2.2rem;
   height: 2.2rem;
   border-radius: 0.65rem;
-  background: var(--brand);
-  color: #f5f7f5;
-  font-family:
-    var(--font-arabic-current, "Noto Naskh Arabic"),
-    "Times New Roman",
-    serif;
-  font-size: 1.15rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--brand) 30%, var(--line));
+  background: var(--surface);
+}
+
+.brand-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .brand-copy {
@@ -616,6 +618,45 @@ ul {
   padding: 0.8rem;
 }
 
+.loading-card {
+  gap: 0.55rem;
+}
+
+.loading-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  font-size: 0.9rem;
+}
+
+.loading-dot {
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 999px;
+  border: 2px solid color-mix(in srgb, var(--brand) 26%, transparent);
+  border-top-color: var(--brand);
+  animation: spin 0.82s linear infinite;
+}
+
+.loading-bar {
+  width: 100%;
+  height: 0.62rem;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--surface-soft) 80%, transparent) 15%,
+      color-mix(in srgb, var(--brand-soft) 60%, transparent) 45%,
+      color-mix(in srgb, var(--surface-soft) 80%, transparent) 75%
+    );
+  background-size: 220% 100%;
+  animation: shimmer 1.15s linear infinite;
+}
+
+.loading-bar.short {
+  width: 64%;
+}
+
 .surah-grid {
   list-style: none;
   display: grid;
@@ -782,6 +823,12 @@ ul {
   filter: brightness(1.03);
 }
 
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+  filter: none;
+}
+
 .btn.is-active {
   border-color: color-mix(in srgb, var(--brand) 32%, var(--line));
   background: var(--brand-soft);
@@ -811,7 +858,7 @@ ul {
 
 .reader-modal {
   width: min(100%, 660px);
-  max-height: min(85vh, 42rem);
+  max-height: min(72vh, 34rem);
   overflow: auto;
 }
 
@@ -838,6 +885,12 @@ ul {
   min-width: 6rem;
 }
 
+.surah-nav-btn {
+  white-space: normal;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
 .reader-modal-settings {
   display: grid;
   gap: 0.56rem;
@@ -846,6 +899,10 @@ ul {
 .reader-modal-settings h3 {
   margin: 0;
   font-size: 0.96rem;
+}
+
+.reader-status-loading {
+  margin: 0;
 }
 
 .ayah-bookmark-popover {
@@ -968,6 +1025,32 @@ ul {
   color: var(--danger);
 }
 
+.reader-bottom-nav {
+  margin-top: 0.7rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.reader-bottom-nav .btn {
+  width: 100%;
+  min-height: 2.3rem;
+}
+
+.reader-bottom-nav .surah-nav-btn {
+  min-height: 2.8rem;
+}
+
+.reader-bottom-loading {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.mushaf-sheet-loading {
+  display: grid;
+  gap: 0.75rem;
+  padding-bottom: 1.3rem;
+}
+
 .reader-layout:fullscreen,
 .reader-layout:-webkit-full-screen {
   width: 100%;
@@ -1012,6 +1095,26 @@ ul {
   gap: 0.7rem;
 }
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 130% 0;
+  }
+
+  to {
+    background-position: -70% 0;
+  }
+}
+
 @media (max-width: 760px) {
   .top-bar {
     grid-template-columns: minmax(0, 1fr);
@@ -1033,6 +1136,10 @@ ul {
 @media (min-width: 900px) {
   .app-shell {
     padding: 1.25rem 1.25rem 3rem;
+  }
+
+  .reader-modal {
+    max-height: min(85vh, 42rem);
   }
 
   .settings-grid {
